@@ -1,18 +1,27 @@
 const input = document.getElementById('input');
 const result = document.getElementById('result');
 const type = document.getElementById('type');
-const letters = new Map();
+const hexaString = "0123456789ABCDEF";
 
-letters.set('A', 10);
-letters.set('B', 11);
-letters.set('C', 12);
-letters.set('D', 13);
-letters.set('E', 14);
-letters.set('F', 15);
+/**
+ * Convert a number to hexadecimal
+ * @param {Number} decimal number to convert
+ * @return {String}
+ */
+const decimalToHexadecimal = (decimal) => {
+    let res = '';
+
+    while (decimal > 0) {
+        res = hexaString[decimal % 16] + res;
+        decimal = parseInt(decimal / 16);
+    }
+    return res == '' ? '0' : res;
+}
 
 /**
  * Convert hexadecimal number to decimal number
- * @param {string} hexadecimal hexadecimal number to convert in decimal
+ * @param {String} hexadecimal hexadecimal number to convert in decimal
+ * @return {Number}
  */
 const hexadecimalToDecimal = (hexadecimal) => {
 
@@ -21,7 +30,7 @@ const hexadecimalToDecimal = (hexadecimal) => {
         .replace('0X', '');
     
     for (let letter of hexadecimal) {
-        if (!letters.has(letter)) {
+        if (hexaString.indexOf(letter) < 0) {
             return 0;
         }
     }
@@ -30,14 +39,15 @@ const hexadecimalToDecimal = (hexadecimal) => {
     hexadecimal
         .split('')
         .reverse()
-        .forEach((e, i) => decimal += Math.pow(16, i) * letters.get(e));
+        .forEach((e, i) => decimal += Math.pow(16, i) * hexaString.indexOf(e));
 
     return decimal;
 }
 
 /**
  * Convert decimal number to binary number
- * @param {string} decimal decimal number to convert in binary
+ * @param {String} decimal decimal number to convert in binary
+ * @return {String}
  */
 const decimalToBinary = (decimal) => {
 
@@ -48,7 +58,7 @@ const decimalToBinary = (decimal) => {
     }
     let binary = '';
 
-    while (decimal >  0) {
+    while (decimal > 0) {
         binary += decimal % 2;
         decimal = parseInt(decimal / 2);
     }
@@ -60,11 +70,11 @@ const decimalToBinary = (decimal) => {
 
 /**
  * Convert binary to decimal number
- * @param {string} binary number binary to convert in decimal
+ * @param {String} binary number binary to convert in decimal
  */
 const binaryToDecimal = (binary) => {
 
-    for (let letter of decimal) {
+    for (let letter of binary) {
         if (!['0','1'].includes(letter)) {
             return 0;
         }
@@ -83,14 +93,17 @@ const convert = () => {
 
     if (input.value.length !== 0) {
         switch (type.value) {
-            case 'decimal': 
+            case 'binDec': 
                 result.value = binaryToDecimal(input.value);
                 break;
-            case 'binary':
+            case 'decBin':
                 result.value = decimalToBinary(input.value);
                 break;
-            case 'hexadecimal':
+            case 'hexDec':
                 result.value = hexadecimalToDecimal(input.value);
+                break;
+            case 'decHex':
+                result.value = decimalToHexadecimal(input.value);
                 break;
         }
     }
